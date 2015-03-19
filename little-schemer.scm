@@ -54,6 +54,7 @@
 			    (cdr lat)))))))))
 
 ;; insertL: Inserts the element 'new' to the left of 'old' in list 'lat'
+;; Page 51
 (define insertL
   (lambda (new old lat)
     (cond
