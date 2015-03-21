@@ -317,3 +317,84 @@
      (else (cons (car lat)
 		 (rempick1 (sub1 n)
 			   (cdr lat)))))))
+
+;; rember*: Removes all occurrences of 'a' in list 'l'
+;; Page 81
+(define rember*
+  (lambda (a l)
+    (cond
+     ((null? l) (quote ()))
+     ((atom? (car l))
+      (cond
+       ((eq? (car l) a)
+	(rember* a (cdr l)))
+       (else (cons (car l)
+		   (rember* a (cdr l))))))
+     (else (cons (rember* a (car l))
+		 (rember* a (cdr l)))))))
+
+;; insertR: Inserts the atom 'new' at the right of every 'old'
+;; Page 82
+(define insertR*
+  (lambda (new old l)
+    (cond
+     ((null? l) (quote ()))
+     ((atom? (car l))
+      (cond
+       ((eq? (car l) old)
+	(cons old
+	      (cons new
+		    (insertR* new old (cdr l)))))
+       (else (cons (car l)
+		   (insertR* new old (cdr l))))))
+     (else (cons (insertR* new old (car l))
+		 (insertR* new old (cdr l)))))))
+
+;; occur*: Totals the number of occurrences of atom 'a' in list 'l'
+;; Page 85
+(define occur*
+  (lambda (a l)
+    (cond
+     ((null? l) 0)
+     ((atom? (car l))
+      (cond
+       ((eq? (car l) a)
+	(add1 (occur* a (cdr l))))
+       (else (occur* a (cdr l)))))
+     (else (++ (occur* a (car l))
+	       (occur* a (cdr l)))))))
+
+;; subst*: Replaces all occurrences of 'old' with 'new' in list 'l'
+;; Page 85
+(define subst*
+  (lambda (new old l)
+    (cond
+     ((null? l) (quote ()))
+     ((atom? (car l))
+      (cond
+       ((eq? old (car l))
+	(cons new
+	      (subst* new old (cdr l))))
+       (else
+	(cons (car l)
+	      (subst* new old (cdr l))))))
+      (else
+       (cons (subst* new old (car l))
+	     (subst* new old (cdr l)))))))
+
+;; insertL*: Add 'new' to the left of every occurrence of 'old' in list 'l'
+;; Page 86
+(define insertL*
+  (lambda (new old l)
+    (cond
+     ((null? l) (quote ()))
+     ((atom? (car l))
+      (cond
+       ((eq? (car l) old)
+	(cons new
+	      (cons old
+		    (insertL* new old (cdr l)))))
+       (else (cons (car l)
+		   (insertL* new old (cdr l))))))
+     (else (cons (insertL* new old (car l))
+		 (insertL* new old (cdr l)))))))
