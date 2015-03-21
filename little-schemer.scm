@@ -201,3 +201,119 @@
      ((<< n m) #f)
      (else #t))))
 
+;; ^: Rewrites exponentiation for non-negative integers
+;; Page 74
+(define ^
+  (lambda (n m)
+    (cond
+     ((zero? m) 1)
+     (else (** n (^ n (sub1 m)))))))
+
+;; //: Rewrites division for non-negative integers
+;; Page 75
+(define //
+  (lambda (n m)
+    (cond
+     ((<< n m) 0)
+     ;; Count the number of subtractions until (<< n m)
+     (else (add1 (// (-- n m) m))))))
+
+;; length1: Rewrites the length function, which counts the elements in list 'lat'
+;; Page 76
+(define length1
+  (lambda (lat)
+    (cond
+     ((null? lat) 0)
+     (else (add1 (length1 (cdr lat)))))))
+
+;; pick: Returns the value in list 'lat' at position 'n'
+;; Page 76
+(define pick
+  (lambda (n lat)
+    (cond
+     ((zero? (sub1 n)) (car lat))
+     (else (pick (sub1 n) (cdr lat))))))
+
+;; rempick: Removes the value in list 'lat' at position 'n'
+;; Page 76
+(define rempick
+  (lambda (n lat)
+    (cond
+     ((zero? (sub1 n)) (cdr lat))
+     (else (cons (car lat)
+		 (rempick (sub1 n) (cdr lat)))))))
+
+;; no-nums: Removes all numbers from list 'lat'
+;; Page 77
+(define no-nums
+  (lambda (lat)
+    (cond
+     ((null? lat) (quote ()))
+     (else (cond
+	    ((number? (car lat)) (no-nums (cdr lat)))
+	    (else (cons (car lat)
+			(no-nums (cdr lat)))))))))
+
+;; all-nums: Returns the list of all numbers in list 'lat'
+;; Page 78
+(define all-nums
+  (lambda (lat)
+    (cond
+     ((null? lat) (quote ()))
+     (else (cond
+	    ((number? (car lat))
+	     (cons (car lat)
+		   (all-nums (cdr lat))))
+	    (else (all-nums (cdr lat))))))))
+
+;; eqan?: Tests whether a1 and a2 are the same atom
+;; Page 78
+(define eqan?
+  (lambda (a1 a2)
+    (cond
+     ((and (number? a1) (number? a2))
+      (== a1 a2))
+     ((or (number? a1) (number? a2))
+      #f)
+     (else (eq? a1 a2)))))
+
+;; occur: Counts the number of times an atom appears in list 'lat'
+;; Page 78
+(define occur
+  (lambda (a lat)
+    (cond
+     ((null? lat) 0)
+     (else (cond
+	    ((eq? a (car lat))
+	     (add1 (occur a (cdr lat))))
+	    (else (occur a (cdr lat))))))))
+
+;; one?: Tests whether a value equals 1
+;; Page 79
+;; First definition
+(define one?
+  (lambda (n)
+    (cond
+     ((zero? n) #f)
+     (else (zero? (sub1 n))))))
+
+;; Second definition
+(define _one?
+  (lambda (n)
+    (cond
+     (else (= n 1)))))
+
+;; Third definition
+(define __one?
+  (lambda (n)
+    (= n 1)))
+
+;; rempick1: Rewrites rempick, which removes the nth atom from list 'lat'
+;; Page 79
+(define rempick1
+  (lambda (n lat)
+    (cond
+     ((one? n) (cdr lat))
+     (else (cons (car lat)
+		 (rempick1 (sub1 n)
+			   (cdr lat)))))))
