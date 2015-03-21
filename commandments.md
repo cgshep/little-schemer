@@ -1,7 +1,7 @@
 # The Little Schemer Commandments
 
-1. The first condition when recursing through a list should be `(null? lat)`;
-   when recursing with numbers, ask `(zero? n)` and 'else'
+1. The first condition when recursing through a list should be `(null? lat)`
+   When recursing with numbers, ask `(zero? n)` and 'else'
 
 2. Use `cons` to build lists
 
