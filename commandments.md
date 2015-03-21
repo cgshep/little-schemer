@@ -1,7 +1,7 @@
 # The Little Schemer Commandments
 
 1. The first condition when recursing through a list should be `(null? lat)`
-   When recursing with numbers, ask `(zero? n)` and 'else'
+When recursing with numbers, ask `(zero? n)` and 'else'
 
 2. Use `cons` to build lists
 
@@ -14,7 +14,9 @@
 	
 5. When building a value with `+`, always use `0` for the value of the terminating
    line, for adding `0` does not change the value of an addition.
-   When building a value with `*`, always use `1` for the value of the terminating
+
+When building a value with `*`, always use `1` for the value of the terminating
    line, for multiplying by 1 does not change the value of a multiplicaiton.
-   When building a value with `cons`, always consider `()` for the value of the
+
+When building a value with `cons`, always consider `()` for the value of the
    terminating line
