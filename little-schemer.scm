@@ -75,9 +75,12 @@
 (define multirember
   (lambda (a lat)
     (cond
-     ((eq? (car lat) a) (multirember a (cdr lat)))
-     (else (cons (car lat)
-		 (multirember a (cdr lat)))))))
+     ((null? lat) (quote ()))
+     (else
+      (cond
+       ((eq? (car lat) a) (multirember a (cdr lat)))
+       (else (cons (car lat)
+		 (multirember a (cdr lat)))))))))
 
 ;; multiinsertR: Inserts element 'new' to the right of every occurrence of 'old' in list 'lat'
 ;; Page 56
@@ -104,8 +107,7 @@
       (cond
        ((eq? (car lat) old)
 	(cons new
-	      ;; 'old' is equivalent to (car lat) in this case
-	      (cons old 
+	     (cons old 
 			(multiinsertL new old (cdr lat)))))
        (else (cons (car lat)
 		   (multiinsertL new old (cdr lat)))))))))
@@ -122,3 +124,30 @@
 		   (multisubst new old (cdr lat))))
 	    (else (cons (car lat)
 			(multisubst new old (cdr lat)))))))))
+
+;; add1: Returns the value n+1 for some n
+;; Page 59
+(define add1
+  (lambda (n)
+    (+ n 1)))
+
+;; sub1: Returns the value n-1 for some n
+;; Page 59
+(define sub1
+  (lambda (n)
+    (- n 1)))
+
+;; ++: Rewriting addition for non-negative integers
+;; Page 60
+(define ++
+  (lambda (n m)
+    (cond
+     ((zero? m) n)
+     (else (add1 (++ n (sub1 m)))))))
+
+;; --: Rewriting substraction for non-negative integers
+(define --
+  (lambda (n m)
+    (cond
+     ((zero? m) n)
+     (else (sub1 (-- n (sub1 m)))))))
