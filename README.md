@@ -4,6 +4,7 @@ Study resources for [The Little Schemer](http://mitpress.mit.edu/books/little-sc
 
 Contains:
 * Scheme file containing function definitions developed during the book (tested under [CHICKEN Scheme](http://www.call-cc.org/))
+* The Little Schemer Commandments (below)
 
 ## The Little Schemer Commandments
 

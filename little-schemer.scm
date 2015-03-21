@@ -162,3 +162,42 @@
     (cond
      ((zero? m) 0)
      (else (++ n (** n (sub1 m)))))))
+
+;; tup+: Adds the elements of tup1 to tup2 at each position
+;; Page 69
+(define tup+
+  (lambda (tup1 tup2)
+    (cond
+     ((null? tup1) tup2)
+     ((null? tup2) tup1)
+     (else
+      (cons (+ (car tup1) (car tup2))
+	    (tup+ (cdr tup1) (cdr tup2)))))))
+
+;; >>: Rewrites the greater-than function for non-negative integers
+;; Page 72
+(define >>
+  (lambda (n m)
+    (cond
+     ((zero? n) #f)
+     ((zero? m) #t)
+     (else (>> (sub1 n) (sub1 m))))))
+  
+;; <<: Rewrites the less-than function for non-negatie integers
+;; Page 73
+(define <<
+  (lambda (n m)
+    (cond
+     ((zero? m) #f)
+     ((zero? n) #t)
+     (else (<< (sub1 n) (sub1 m))))))
+
+;; ==: Rewrites equality using << and >>
+;; Page 74
+(define ==
+  (lambda (n m)
+    (cond
+     ((>> n m) #f)
+     ((<< n m) #f)
+     (else #t))))
+
