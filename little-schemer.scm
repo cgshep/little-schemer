@@ -1,10 +1,3 @@
-;; The Little Schemer commandments:
-;; 1. The first condition when recursing through a list should be (null? lat)
-;; 2. Use 'cons' to build lists
-;; 3. When building a list, describe the first typical element and cons it onto the recursion
-;; 4. Always change at least one argument when recurring.  It must be changed to be closer to termination.
-;;    The changing argument must be tested in the termination condition;
-;;    for example, when using cdr, test termination with null?
 
 (define atom?
   (lambda (x)
@@ -137,7 +130,7 @@
   (lambda (n)
     (- n 1)))
 
-;; ++: Rewriting addition for non-negative integers
+;; ++: Rewrites addition for non-negative integers
 ;; Page 60
 (define ++
   (lambda (n m)
@@ -145,9 +138,27 @@
      ((zero? m) n)
      (else (add1 (++ n (sub1 m)))))))
 
-;; --: Rewriting substraction for non-negative integers
+;; --: Rewrites substraction for non-negative integers
+;; Page 61
 (define --
   (lambda (n m)
     (cond
      ((zero? m) n)
      (else (sub1 (-- n (sub1 m)))))))
+
+;; addtup: Totals the numbers in tuple 'tup'
+;; Introduced on page 62; formalised on page 64
+(define addtup
+  (lambda (tup)
+    (cond
+     ((null? tup) 0)
+     ;; Let's use ++ for fun
+     (else (++ (car tup) (addtup (cdr tup)))))))
+
+;; **: Rewrites multiplication for non-negative integers
+;; Page 65
+(define **
+  (lambda (n m)
+    (cond
+     ((zero? m) 0)
+     (else (++ n (** n (sub1 m)))))))
