@@ -398,3 +398,84 @@
 		   (insertL* new old (cdr l))))))
      (else (cons (insertL* new old (car l))
 		 (insertL* new old (cdr l)))))))
+
+;; member*: Tests whether atom 'a' exists in list 'l'
+;; Page 87
+(define member*
+  (lambda (a l)
+    (cond
+     ((null? l) #f)
+     ((atom? (car l))
+      (or (eq? (car l) a)
+	  (member* a (cdr l))))
+     (else
+      (or (member* a (car l))
+	  (member* a (cdr l)))))))
+
+;; leftmost: Returns the leftmost atom in a list
+;; Page 87
+(define leftmost
+  (lambda (l)
+    (cond
+     ((atom? (car l)) (car l))
+     (else (leftmost (car l))))))
+
+;; eqlist?: Determines whether two lists are identical
+;; Page 91
+(define eqlist?
+  (lambda (l1 l2)
+    (cond
+     ((and (null? l1) (null? l2)) #t)
+     ((or (null? l1) (null? l2)) #f)
+     ((and (atom? (car l1)) (atom? (car l2)))
+      (and (eqan? (car l1) (car l2))
+	   (eqlist? (cdr l1) (cdr l2))))
+     ;; Below line is an optimisation to prevent needless recursion
+     ((or (atom? (car l1)) (atom? (car l2))) #f)
+     (else
+      (and (eqlist? (car l1) (car l2))
+	   (eqlist? (cdr l1) (cdr l2)))))))
+
+;; equal1?: Rewrites equal?, which tests whether two S-expressions are equal
+;; Page 93
+(define equal1?
+  (lambda (s1 s2)
+    (cond
+     ((and (atom? s1) (atom? s2))
+      (eqan? s1 s2))
+     ((or (atom? s1) (atom? s2)) #f)
+     (else (eqlist? s1 s2)))))
+
+;; eqlist1?: Rewrites eqlist? using equal?
+;; Page 93
+(define eqlist1?
+  (lambda (l1 l2)
+    (cond
+     ((and (null? l1) (null? l2)) #t)
+     ((or (null? l1) (null? l1)) #f)
+     (else (and (equal? (car l1) (car l2))
+		(eqlist1? (cdr l1) (cdr l2)))))))
+
+;; rember1: Simplified definition of rember, removes the first
+;; S-expression as opposed to the first matching atom in list 'l'
+;; Page 64
+(define rember1
+  (lambda (s l)
+    (cond
+     ((null? l) (quote ()))
+     (else (cond
+	    ((equal? (car l) s) (cdr l))
+	    (else (cons (car l)
+			(rember1 s (cdr l)))))))))
+
+
+;; rember2: Simplified definition of rember1
+;; Page 95
+(define rember2
+  (lambda (s l)
+    (cond
+     ((null? l) (quote ()))
+     ((equal? (car l) s) (cdr l))
+     (else (cons (car l)
+		 (rember2 s (cdr l)))))))
+
