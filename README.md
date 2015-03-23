@@ -16,12 +16,10 @@ Contains:
 3. When building a list, describe the first typical element and `cons` it onto the recursion
 
 4. Always change at least one argument when recurring.
-When recurring with atoms, `lat`, use `(car lat)`.  When recurring on a
+   When recurring with atoms, `lat`, use `(car lat)`.  When recurring on a
 number, `n`, use `(sub1 n)`.  When recurring on a list of S-expressions, `l`,
 use `(car l)` and `(cdr l)` if neither `(null? l)` nor `(atom? (car l))`
-are true.
-
-When using `cdr`, test termination with `null?`; when using `sub1`, test
+are true.  When using `cdr`, test termination with `null?`; when using `sub1`, test
 termination with `zero?`.
 	
 5. When building a value with `+`, always use `0` for the value of the terminating
