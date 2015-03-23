@@ -479,3 +479,87 @@
      (else (cons (car l)
 		 (rember2 s (cdr l)))))))
 
+;; numbered?: Determines whether a representation of an
+;; arithmetic expressions constains only numbers besides
+;; the ++, ** and ^
+;; Pages 98-101
+(define numbered?
+  (lambda (aexp)
+    (cond
+     ((atom? aexp) (number? aexp))
+     (else
+      (and (numbered? (car aexp))
+	   (numbered? (car (cdr (cdr aexp)))))))))
+
+;; first-sub-exp: Retrieves the first sub-expression
+;; of an arithmetic expression
+;; Page 105
+(define first-sub-exp
+  (lambda (aexp)
+    (car aexp)))
+
+;; second-sub-exp: Retrieves the second sub-expression
+;; of an arithmetic expression
+;; Page 106
+(define second-sub-exp
+  (lambda (aexp)
+    (car (cdr (cdr aexp)))))
+
+;; operator: Retrieves the operator of an arithmetic expression
+;; Page 106
+(define operator
+  (lambda (aexp)
+    (car (cdr aexp))))
+
+;; value: Returns the value of a numbered arithmetic expression
+;; Pages 102-106
+(define value
+  (lambda (nexp)
+    (cond
+     ((atom? nexp) nexp)
+     ((eq? (operator nexp) (quote +))
+      (++ (value (first-sub-exp nexp))
+	  (value (second-sub-exp nexp))))
+     ((eq? (operator nexp) (quote *))
+      (** (value (first-sub-exp nexp))
+	  (value (second-sub-exp nexp))))
+     (else
+      (^ (value (first-sub-exp nexp))
+	 (value (second-sub-exp nexp)))))))
+
+;; Definitions for representing numbers using a list of empty lists
+;; sero?: Tests for zero with this new representation
+;; Page 108
+(define sero?
+  (lambda (n)
+    (null? n)))
+
+;; edd1: Analogous to add1
+;; Page 108
+(define edd1
+  (lambda (n)
+    (cons (quote ()) n)))
+
+;; zub1: Analogous to sub1
+;; Page 108
+(define zub1
+  (lambda (n)
+    (cdr n)))
+
+;; +!: Analogous to +
+;; Page 108
+(define +!
+  (lambda (n m)
+    (cond
+     ((sero? m) n)
+     (else (edd1 (+! n (zub1 m)))))))
+
+;; llat?: Analogous to 'lat?'
+;; Page 109
+(define llat?
+  (lambda (l)
+    (cond
+     ((null? l) #t)
+     ((atom? (car l))
+      (llat? (cdr l)))
+     (else #f))))

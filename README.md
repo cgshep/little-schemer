@@ -15,10 +15,14 @@ Contains:
 
 3. When building a list, describe the first typical element and `cons` it onto the recursion
 
-4. Always change at least one argument when recurring; it must be changed to be closer to termination.
-   The changing argument must be tested in the termination condition;
-   for example, when using `cdr`, test termination with `null?`
-   and when using `sub1`, test termination with `zero?`
+4. Always change at least one argument when recurring.
+When recurring with atoms, `lat`, use `(car lat)`.  When recurring on a
+number, `n`, use `(sub1 n)`.  When recurring on a list of S-expressions, `l`,
+use `(car l)` and `(cdr l)` if neither `(null? l)` nor `(atom? (car l))`
+are true.
+
+When using `cdr`, test termination with `null?`; when using `sub1`, test
+termination with `zero?`.
 	
 5. When building a value with `+`, always use `0` for the value of the terminating
    line, for adding `0` does not change the value of an addition.
@@ -27,6 +31,13 @@ Contains:
    When building a value with `cons`, always consider `()` for the value of the
    terminating line
 
+6. Simplify only after the function is correct
+
+7. Recur on the subparts that are of the same nature:
+   * On the sublists of a list
+   * On the subexpressions of an arithmetic expression
+
+8. Use help functions to abstract from representations
 
 ![The Little Schemer](http://lambda.jstolarek.com/wp-content/uploads/2013/01/The_Little_Schemer.jpg)
 
