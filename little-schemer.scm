@@ -27,11 +27,12 @@
      (else (cons (car lat)
 		 (rember a (cdr lat)))))))
 
-;; Firsts: constructs a list containing the first elements of each internal list
+;; firsts: constructs a list with the first elements of each internal list
+;; Pa
 (define firsts
   (lambda (l)
     (cond
-     ((null? l)           (quote ()))
+     ((null? l) (quote ()))
      (else (cons (car (car l))
 		 (firsts (cdr l)))))))
 
@@ -563,3 +564,201 @@
      ((atom? (car l))
       (llat? (cdr l)))
      (else #f))))
+
+;; set?: Determines whether a list of atoms is a set
+;; Page 111
+(define set?
+  (lambda (lat)
+    (cond
+     ((null? lat) #t)
+     ((member? (car lat) (cdr lat)) #f)
+     (else (set? (cdr lat))))))
+
+;; makeset: Transforms a list of atoms into a set
+;; Page 112
+(define makeset
+  (lambda (lat)
+    (cond
+     ((null? lat) (quote ()))
+     ((member? (car lat) (cdr lat))
+      (makeset (cdr lat)))
+     (else
+      (cons (car lat)
+	    (makeset (cdr lat)))))))
+
+;; makeset-multirember: Writing makeset using multirember
+;; Page 112
+(define makeset-multirember
+  (lambda (lat)
+    (cond
+     ((null? lat) (quote ()))
+     (else (cons (car lat)
+		 (makeset-multirember
+		  (multirember (car lat)
+			       (cdr lat))))))))
+
+;; subset?: Determines whether one set is contained in another
+;; Page 114
+(define subset?
+  (lambda (set1 set2)
+    (cond
+     ((null? set1) #t)
+     ((member? (car set1) set2)
+      (subset? (cdr set1) set2))
+     (else #f))))
+
+;; subset1?: Writing 'subset?' with 'and'
+;; Page 114
+(define subset1?
+  (lambda (set1 set2)
+    (cond
+     ((null? set1) #t)
+     (else
+      (and (member? (car set1) set2)
+	  (subset? (cdr set1) set2))))))
+
+;; eqset?: Determines whether two sets are equal
+;; Page 114
+(define eqset?
+  (lambda (set1 set2)
+    (cond
+     ((subset? set1 set2)
+      (subset? set2 set1))
+     (else #f))))
+
+;; eqset1?: Simplification of 'eqset?'
+;; Page 115
+(define eqset1?
+  (lambda (set1 set2)
+    (and (subset? set1 set2)
+	 (subset? set2 set1))))
+
+;; intersect?: Determines whether at least one atom exists in both sets
+;; Page 115
+(define intersect?
+  (lambda (set1 set2)
+    (cond
+     ((null? set1) #f)
+     (else
+      (or (member? (car set1) set2)
+	  (intersect? (cdr set1) set2))))))
+
+;; intersect1?: Alternate version of 'intersect?'
+;; Page 115
+(define intersect1?
+  (lambda (set1 set2)
+    (cond
+     ((null? set1) #f)
+     ((member? (car set1) set2) #t)
+     (else (intersect1? (cdr set1) set2)))))
+
+;; intersect: Returns the intersection of two sets
+;; Page 116
+(define intersect
+  (lambda (set1 set2)
+    (cond
+     ((null? set1) (quote ()))
+     ((member? (car set1) set2)
+      (cons (car set1)
+	    (intersect (cdr set1) set2)))
+     (else (intersect (cdr set1) set2)))))
+
+;; union: Returns the union of two sets
+;; Page 116
+(define union
+  (lambda (set1 set2)
+    (cond
+     ((null? set1) set2)
+     ((member? (car set1) set2)
+      (union (cdr set1) set2))
+     (else (cons (car set1)
+		 (union (cdr set1) set2))))))
+
+;; set-diff: Returns the set difference of two sets ('xxx' in the text)
+;; Page 117
+(define set-diff
+  (lambda (set1 set2)
+    (cond
+     ((null? set1) (quote ()))
+     ((member? (car set1) set2)
+      (set-diff (cdr set1) set2))
+     (else (cons (car set1)
+		 (set-diff (cdr set1) set2))))))
+
+;; intersectall: Finds the intersection of atoms in a list of sets
+;; Page 117
+(define intersectall
+  (lambda (l-set)
+    (cond
+     ((null? (cdr l-set)) (car l-set))
+     (else (intersect (car l-set)
+		      (intersectall (cdr l-set)))))))
+
+;; a-pair?: Determines whether something is a pair
+;; Page 118
+(define a-pair?
+  (lambda (x)
+    (cond
+     ((atom? x) #f)
+     ((null? x) #f)
+     ((null? (cdr x)) #f)
+     ((null? (cdr (cdr x))) #t)
+     (else #f))))
+
+;; Helper functions for representing pairs
+;; Page 119
+(define first
+  (lambda (p)
+    (car p)))
+
+(define second
+  (lambda (p)
+    (car (cdr p))))
+
+(define build
+  (lambda (s1 s2)
+    (cons s1 (cons s2 (quote())))))
+
+(define third
+  (lambda (l)
+    (car (cdr (cdr l)))))
+
+;; fun?: Defined as true if '(firsts rel)' is a set
+;; Page 120
+(define fun?
+  (lambda (rel)
+    (set? (firsts rel))))
+
+;; Definition: a finite function is a list of pairs in which no
+;; first element of any pair is the same as any other element
+
+
+;; revpair: Helper function to 'revpair', reverses a pair's components
+;; Page 121
+(define revpair
+  (lambda (pair)
+    (build (second pair) (first pair))))
+
+;; revrel: Reverses the order of pairs in a relation
+;; Page 120-121
+(define revrel
+  (lambda (rel)
+    (cond
+     ((null? rel) (quote ()))
+     (else (cons (revpair (car rel))
+		 (revel (cdr rel)))))))
+
+;; seconds: Helper function for 'fullfun?'
+;; Page 122
+(define seconds
+  (lambda (l)
+    (cond
+     ((null? l) (quote ()))
+     (else (cons (car (cdr (car l)))
+		 (seconds (cdr l)))))))
+
+;; fullfun?: Determines whether the second element of pairs form a set
+;; Page 122
+(define fullfun?
+  (lambda (fun)
+    (set? (seconds fun))))
