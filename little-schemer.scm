@@ -19,13 +19,15 @@
 	       (member? a (cdr lat)))))))
 
 ;; Rember: removes first occurrence of a member from a list
+;; Page 94
 (define rember
-  (lambda (a lat)
+  (lambda (s l)
     (cond
-     ((null? lat)          (quote ()))
-     ((eq? (car lat) a)    (cdr lat))
-     (else (cons (car lat)
-		 (rember a (cdr lat)))))))
+     ((null? lat) (quote ()))
+     ((equal? (car l) s)
+      (cdr l))
+     (else (cons (car l)
+		 (rember a (cdr l)))))))
 
 ;; firsts: constructs a list with the first elements of each internal list
 ;; Pa
@@ -59,7 +61,7 @@
      ((null? lat) (quote ()))
      (else
       (cond
-       ((eq? (car lat) old) (cons new lat))
+       ((equal? (car lat) old) (cons new lat))
        (else (cons (car lat)
 		   (insertR new old
 			    (cdr lat)))))))))
@@ -762,3 +764,33 @@
 (define fullfun?
   (lambda (fun)
     (set? (seconds fun))))
+
+;; rember-f: Removes an S-exp from a list according to some test function
+;; Page 126
+(define rember-f
+  (lambda (test? a l)
+    (cond
+     ((null? l) (quote ()))
+     ((test? (car l) a)
+      (cdr l))
+     (else (cons (car l)
+		 (rember-f test? a (cdr l)))))))
+
+;; eq?-c: Curried eq? definition
+;; Page 127
+(define eq?-c
+  (lambda (a)
+    (lambda (x)
+      (eq? x a))))
+
+;; rember-f1: Rewriting rember-f as a function of test?
+;; Page 128-129
+(define rember-f1
+  (lambda (test?)
+    (lambda (a l)
+      (cond
+       ((null? l) (quote ()))
+       ((test? (car l) a) (cdr l))
+       (else (cons (car l)
+		   ((rember-f1 test?) a (cdr l))))))))
+
