@@ -794,3 +794,67 @@
        (else (cons (car l)
 		   ((rember-f1 test?) a (cdr l))))))))
 
+;; insertL-f:
+;; Page 130
+(define insertL-f
+  (lambda (test?)
+    (lambda (new old l)
+      (cond
+       ((null? l) (quote ()))
+       ((test? (car l) old)
+	(cons new (cons old (cdr l))))
+       (else (cons (car l)
+		   ((insertL-f test?) new old
+		    (cdr l))))))))
+
+;; insertR-f
+;; Page 130
+(define insertR-f
+  (lambda (test?)
+    (lambda (new old l)
+      (cond
+       ((null? l) (quote ()))
+       ((test? (car l) old)
+	(cons old (cons new (cdr l))))
+       (else (cons (car l)
+		   ((insertR-f test?) new old (cdr l))))))))
+
+
+;; Helper function to cons a S-exp to the left of another
+;; Page 131
+(define seqL
+  (lambda (new old l)
+    (cons new (cons old l))))
+
+;; Helper function to cons a S-exp to the right of another
+;; Page 132
+(define seqR
+  (lambda (new old l)
+    (cons old (cons new l))))
+
+;; insert-g: Inserts either at the left or right
+;; Page 130-132
+(define insert-g
+  (lambda (seq)
+    (lambda (new old l)
+      (cond
+       ((null? l) (quote ()))
+       ((eq? (car l) old)
+	(seq new old (cdr l)))
+       (else (cons (car l)
+		   ((insert-g seq) new old (cdr l))))))))
+
+;; insertL1: Defining insertL with (insert-f seqL)
+;; Page 132
+(define insertL1 (insert-g seqL))
+
+;; insertR1: Defining insertR with (insert-f seqR)
+;; Page 132
+(define insertR1 (insert-g seqR))
+
+;; insertL2: Redefining insertL1 without passing seqL
+;; Page 132
+(define insertL2
+  (insert-g
+   (lambda (new old l)
+     (cons new (cons old l)))))
