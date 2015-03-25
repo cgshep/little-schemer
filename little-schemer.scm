@@ -33,7 +33,7 @@
 ;; Pa
 (define firsts
   (lambda (l)
-    (cond
+    (conde
      ((null? l) (quote ()))
      (else (cons (car (car l))
 		 (firsts (cdr l)))))))
@@ -499,7 +499,7 @@
 ;; Page 105
 (define first-sub-exp
   (lambda (aexp)
-    (car aexp)))
+    (car (cdr aexp))))
 
 ;; second-sub-exp: Retrieves the second sub-expression
 ;; of an arithmetic expression
@@ -512,7 +512,7 @@
 ;; Page 106
 (define operator
   (lambda (aexp)
-    (car (cdr aexp))))
+    (car aexp)))
 
 ;; value: Returns the value of a numbered arithmetic expression
 ;; Pages 102-106
@@ -858,3 +858,84 @@
   (insert-g
    (lambda (new old l)
      (cons new (cons old l)))))
+
+;; seqS: Helper function for simplfying 'subst'
+;; Page 133
+(define seqS
+  (lambda (new old l)
+    (cons new l)))
+
+;; subst1: Simplifying 'subst' using 'insert-g'
+;; Page 133
+(define subst1 (insert-g seqS))
+
+;; atom-to-function:
+;; Page 135
+(define atom-to-function
+  (lambda (a)
+    (cond
+     ((eq? a (quote +)) +)
+     ((eq? a (quote *)) *)
+     (else ^))))
+
+;; value1: Rewriting value with atom-to-function
+;; Page 135
+(define value1
+  (lambda (nexp)
+    (cond
+     ((atom? nexp) nexp)
+     (else
+      ((atom-to-function
+	(operator nexp))
+       (value1 (first-sub-exp nexp))
+       (value1 (second-sub-exp nexp)))))))
+
+;; multirember-f: Rewriting multirember
+;; Page 135
+(define multirember-f
+  (lambda (test?)
+    (lambda (a lat)
+      (cond
+       ((null? lat) (quote ()))
+       ((test? a (car lat))
+	((multirember-f test?) a (cdr lat)))
+       (else (cons (car lat)
+		   ((multirember-f test?) a (cdr lat))))))))
+
+;; multiremberT:
+;; Page 137
+(define multiremberT
+  (lambda (test? lat)
+    ((null? lat) (quote ()))
+    ((test? (car lat))
+     (multiremberT test? (cdr lat)))
+    (else (cons (car lat)
+		(multiremberT test? (cdr lat))))))
+
+(define a-friend
+  (lambda (x y)
+    (null? y)))
+
+;; multirember&co: First encounter with collector functions
+;; Page 137
+(define multirember&co
+  (lambda (a lat col)
+    (cond
+     ((null? lat)
+      (col (quote ()) (quote ())))
+     ((eq? (car lat) a)
+      (multirember&co a (cdr lat)
+		      (lambda (newlat seen)
+			(col newlat
+			     (cons (car lat) seen)))))
+     (else
+      (multirember&co a (cdr lat)
+		      (lambda (newlat seen)
+			(col (cons (car lat) newlat) seen)))))))
+
+;; new-friend: New collector function
+;; Page 139
+(define new-friend
+  (lambda (newlat seen)
+    (col newlat
+	 (cons (car lat) seen))))
