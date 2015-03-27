@@ -39,5 +39,7 @@ termination with `zero?`.
 
 9. Abstract common patterns with a new function
 
+10. Build functions to collect more than one value at a time
+
 ![The Little Schemer](http://lambda.jstolarek.com/wp-content/uploads/2013/01/The_Little_Schemer.jpg)
 
