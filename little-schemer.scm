@@ -919,7 +919,7 @@
 ;; multirember&co: First encounter with collector functions
 ;; Page 137
 (define multirember&co
-  ;; a=tuna, lat=(tuna), col=new-friend
+  ;; a=tuna, lat=(and tuna), col=new-friend
   (lambda (a lat col)
     (cond
      ((null? lat)
@@ -946,3 +946,9 @@
 (define latest-friend
   (lambda (newlat seen)
     (a-friend (cons (quote and) newlat) seen)))
+
+;; last-friend: Returns the length of the first argument
+;; Page 140
+(define last-friend
+  (lambda (x y)
+    (length x)))
