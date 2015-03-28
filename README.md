@@ -6,7 +6,7 @@ Contains:
 * Scheme file with function definitions developed during the book (tested under [CHICKEN Scheme](http://www.call-cc.org/))
 * The Little Schemer Commandments (below)
 * [Supporting literature](/literature/)
-  * *"Applications of Continuations"* -- Daniel P. Friedman
+  * *"Applications of Continuations"* – Daniel P. Friedman
 
 ## The Little Schemer Commandments
 
