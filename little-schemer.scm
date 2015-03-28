@@ -952,3 +952,105 @@
 (define last-friend
   (lambda (x y)
     (length x)))
+
+
+;; multiinsertLR: Inserts new to the left of oldL and to the right of
+;; oldR in lat if oldL and oldR are different
+;; Page 141
+(define multiinsertLR
+  (lambda (new oldL oldR lat)
+    (cond
+     ((null? lat) (quote ()))
+     ;; cons new to left of oldL
+     ((eq? (car lat) oldL)
+      (cons new
+	    (cons oldL
+		  (multiinsertLR new oldL oldR (cdr lat)))))
+     ;; cons new to right of oldR
+     ((eq? (car lat) oldR)
+      (cons oldR
+	    (cons new
+		  (multiinsertLR new oldL oldR (cdr lat)))))
+     (else
+      (cons (car lat)
+	    (multiinsertLR new oldL oldR (cdr lat)))))))
+
+;; multiinsertLR&co: multiinsertLR using a collector function.
+;; It uses col on the new lat, on the number of left insertions,
+;; and the number of right insertions
+;; Page 142-143
+(define multiinsertLR&co
+  (lambda (new oldL oldR lat col)
+    (cond
+     ((null? lat)
+      (col (quote ()) 0 0))
+     ((eq? (car lat) oldL)
+      (multiinsertLR&co new oldL oldR
+			(cdr lat)
+			(lambda (newlat L R)
+			  (col (cons new
+				     (cons oldL newlat))
+			       (add1 L) R))))
+     ((eq? (car lat) oldR)
+      (multiinsertLR&co new oldL oldR
+			(cdr lat)
+			(lambda (newlat L R)
+			  (col (cons oldR
+				     (cons new newlat))
+			       L (add1 R)))))
+     (else
+      (multiinsertLR&co new oldL oldR
+			(cdr lat)
+			(lambda (newlat L R)
+			  (col (cons (car lat) new lat) L R)))))))
+
+;; even?: Determines whether a number is even
+;; Page 144
+(define even?
+  (lambda (n)
+    (= (** (// n 2) 2) n)))
+
+;; evens-only*: Removes all odd numbers from a list of nested lists
+;; Page 144
+(define evens-only*
+  (lambda (l)
+    (cond
+     ((null? l) (quote ()))
+     ((atom? (car l))
+      (cond
+       ((even? (car l))
+	(cons (car l)
+	      (evens-only* (cdr l))))
+       (else (evens-only* (cdr l)))))
+      (else (cons (evens-only* (car l))
+		  (evens-only* (cdr l)))))))
+
+;; evens-only*&co: Builds a nested list of even numbers by removing
+;; the odd ones from its argument and simultaneously multiplies the even
+;; numbers and sums up the odd numbers that occur in its argument
+;; Page 145
+(define evens-only*&co
+  (lambda (l col)
+    (cond
+     ((null? l)
+      (col (quote ()) 1 0))
+     ((atom? (car l))
+      (cond
+       ((even? (car l))
+	(evens-only*&co (cdr l)
+			(lambda (newl p s)
+			  (col (cons (car l) newl)
+			       (** (car l) p) s))))
+       (else
+	(evens-only*&co (cdr l)
+			(lambda (newl p s)
+			  (col newl p (++ (car l) s)))))))
+     (else
+      (evens-only*&co (car l)
+		      (lambda (newl p s)
+			(evens-only*&co (cdr l)
+					(lambda (l1 p1 s1)
+					  (col (cons newl l1)
+					       (** p p1)
+					       (++ s s1))))))))))
+			     
