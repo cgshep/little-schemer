@@ -3,8 +3,10 @@
 Study resources for [The Little Schemer](http://mitpress.mit.edu/books/little-schemer).
 
 Contains:
-* Scheme file containing function definitions developed during the book (tested under [CHICKEN Scheme](http://www.call-cc.org/))
+* Scheme file with function definitions developed during the book (tested under [CHICKEN Scheme](http://www.call-cc.org/))
 * The Little Schemer Commandments (below)
+* [Supporting literature](/literature/)
+  * *"Applications of Continuations"* -- Daniel P. Friedman
 
 ## The Little Schemer Commandments
 
