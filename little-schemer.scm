@@ -235,7 +235,8 @@
   (lambda (n lat)
     (cond
      ((zero? (sub1 n)) (car lat))
-     (else (pick (sub1 n) (cdr lat))))))
+     (else
+      (pick (sub1 n) (cdr lat))))))
 
 ;; rempick: Removes the value in list 'lat' at position 'n'
 ;; Page 76
@@ -717,6 +718,7 @@
   (lambda (p)
     (car (cdr p))))
 
+;; build: Returns the pair (s1 s2)
 (define build
   (lambda (s1 s2)
     (cons s1 (cons s2 (quote())))))
@@ -953,7 +955,6 @@
   (lambda (x y)
     (length x)))
 
-
 ;; multiinsertLR: Inserts new to the left of oldL and to the right of
 ;; oldR in lat if oldL and oldR are different
 ;; Page 141
@@ -1054,3 +1055,82 @@
 					       (** p p1)
 					       (++ s s1))))))))))
 			     
+;; the-last-friend: Collector function for evens-only*&co
+;; Page 146
+(define the-last-friend
+  (lambda (newl product sum)
+    (cons sum
+	  (cons product newl))))
+
+;; looking: Takes the first element of lat; if it's a number (n),
+;; goes to the nth element in lat; if the nth element is a symbol,
+;; it returns the value of (eq? symbol a); if the nth element is
+;; another number, it goes to this element in the lat and repeats
+;; until a symbol is found
+;; Page 149
+(define looking
+  (lambda (a lat)
+    (keep-looking a (pick 1 lat) lat)))
+
+;; keep-looking: Uses unnatural recursion
+;; Page 150
+(define keep-looking
+  (lambda (a sorn lat)
+    (cond
+     ((number? sorn)
+      (keep-looking a (pick sorn lat) lat))
+     (else (eq? sorn a)))))
+
+;; eternity: Example of a partial function
+;; Page 151
+(define eternity
+  (lambda (x)
+    (eternity x)))
+
+;; shift: Takes a pair whose first compnent is a pair and builds
+;; another pair by shifting the second part of the first component
+;; into the second component
+;; Page 152
+(define shift
+  (lambda (pair)
+    (build (first (first pair))
+	   (build (second (first pair))
+		  (second pair)))))
+
+;; align
+;; Page 152
+(define align
+  (lambda (pora)
+    (cond
+     ((atom? pora) pora)
+     ((a-pair? (first pora))
+      (align (shift pora)))
+     (else (build (first pora)
+		  (align (second pora)))))))
+
+;; Page 153
+(define length*
+  (lambda (pora)
+    (cond
+     ((atom? pora) 1)
+     (else
+      (++ (length* (first pora))
+	  (length* (second pora)))))))
+
+;; Page 154
+(define weight*
+  (lambda (pora)
+    (cond
+     ((atom? pora) 1)
+     (else
+      (++ (** (weight* (first pora)) 2)
+	  (weight* (second pora)))))))
+
+(define shuffle
+  (lambda (pora)
+    (ocnd
+     ((atom? pora) pora)
+     ((a-pair? (first pora))
+      (shuffle (revpaid pora)))
+     (else (build (first pora)
+		  (shuffle (second pora)))))))
