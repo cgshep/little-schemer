@@ -23,17 +23,17 @@
 (define rember
   (lambda (s l)
     (cond
-     ((null? lat) (quote ()))
+     ((null? l) (quote ()))
      ((equal? (car l) s)
       (cdr l))
      (else (cons (car l)
-		 (rember a (cdr l)))))))
+		 (rember s (cdr l)))))))
 
 ;; firsts: constructs a list with the first elements of each internal list
 ;; Pa
 (define firsts
   (lambda (l)
-    (conde
+    (cond
      ((null? l) (quote ()))
      (else (cons (car (car l))
 		 (firsts (cdr l)))))))
@@ -750,7 +750,7 @@
     (cond
      ((null? rel) (quote ()))
      (else (cons (revpair (car rel))
-		 (revel (cdr rel)))))))
+		 (revrel (cdr rel)))))))
 
 ;; seconds: Helper function for 'fullfun?'
 ;; Page 122
@@ -908,11 +908,12 @@
 ;; Page 137
 (define multiremberT
   (lambda (test? lat)
-    ((null? lat) (quote ()))
-    ((test? (car lat))
-     (multiremberT test? (cdr lat)))
-    (else (cons (car lat)
-		(multiremberT test? (cdr lat))))))
+    (cond
+     ((null? lat) (quote ()))
+     ((test? (car lat))
+      (multiremberT test? (cdr lat)))
+     (else (cons (car lat)
+		 (multiremberT test? (cdr lat)))))))
 
 (define a-friend
   (lambda (x y)
@@ -1003,7 +1004,7 @@
       (multiinsertLR&co new oldL oldR
 			(cdr lat)
 			(lambda (newlat L R)
-			  (col (cons (car lat) new lat) L R)))))))
+			  (col (cons (car lat) newlat) L R)))))))
 
 ;; even?: Determines whether a number is even
 ;; Page 144
@@ -1117,6 +1118,7 @@
       (++ (length* (first pora))
 	  (length* (second pora)))))))
 
+;; weight*: Models how many times each atom is 'looked' at in align
 ;; Page 154
 (define weight*
   (lambda (pora)
@@ -1126,11 +1128,26 @@
       (++ (** (weight* (first pora)) 2)
 	  (weight* (second pora)))))))
 
+;; shuffle: More pair-manipulating shenanigans
+;; Example of a partial function; the function does not finish
+;; if the argument is two pairs, e.g. '((a b) (c d))
+;; Page 154
 (define shuffle
   (lambda (pora)
-    (ocnd
+    (cond
      ((atom? pora) pora)
      ((a-pair? (first pora))
-      (shuffle (revpaid pora)))
+      (shuffle (revpair pora)))
      (else (build (first pora)
 		  (shuffle (second pora)))))))
+
+;; Collatz Conjecture
+;; Unsolved challenge: "Does the Collatz sequence from initial
+;; value n eventually reach 1, for all n > 0?"
+;; Page 155 (shortened version)
+(define C
+  (lambda (n)
+    (cond
+     ((one? n) 1)
+     ((even? n) (C (// n 2)))
+     (else (C (add1 (** 3 n)))))))
