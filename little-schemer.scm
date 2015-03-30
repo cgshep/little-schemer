@@ -1151,3 +1151,15 @@
      ((one? n) 1)
      ((even? n) (C (// n 2)))
      (else (C (add1 (** 3 n)))))))
+
+;; Ackermann Function
+;; Classic example of a non-primitive recursive function
+;; Page 156
+(define A
+  (lambda (n m)
+    (cond
+     ((zero? n) (add1 m))
+     ((zero? m) (A (sub1 n) 1))
+     (else (A (sub1 n)
+	      (A n (sub1 m)))))))
+
