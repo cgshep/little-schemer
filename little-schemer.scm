@@ -1163,3 +1163,8 @@
      (else (A (sub1 n)
 	      (A n (sub1 m)))))))
 
+;; will-stop?: Determines whether some function completes
+;; Complete for fame and profit
+;; Page 157
+(define will-stop?
+  (lambda (f)))
