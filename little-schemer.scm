@@ -1409,3 +1409,50 @@
      (lambda (f)
        (le (lambda (x) ((f f) x)))))))
 
+;; An entry is a pair of equally-sized lists whose first list is a set
+;; new-entry: Builds a new entry
+;; Page 175
+(define new-entry build)
+
+;; lookup-in-entry:
+;; Page 176
+(define lookup-in-entry
+  (lambda (name entry entry-f)
+    (lookup-in-entry-help name
+			  (first entry)
+			  (second entry)
+			  entry-f)))
+
+;; lookup-in-entry-help: Helper function for lookup-in-entry
+;; Page 176
+(define lookup-in-entry-help
+  (lambda (name names values entry-f)
+    (cond
+     ((null? names) (entry-f name))
+     ((eq? (car names) name)
+      (car values))
+     (else (lookup-in-entry-help name
+				 (cdr names)
+				 (cdr values)
+				 entry-f)))))
+
+;; A table (also called an environment) is a list of entries.
+;;
+;; extend-table: Takes an entry and a table and creates a new
+;; table by putting the new entry in front of the old table
+;; Page 176
+(define extend-table cons)
+
+;; lookup-in-table: Finds the corresponding value in a table for a name
+;; Page 176-177
+(define lookup-in-table
+  (lambda (name table table-f)
+    (cond
+     ((null? table) (table-f name))
+     (else (lookup-in-entry name
+			    (car table)
+			    (lambda (name)
+			      (lookup-in-table name
+					       (cdr table)
+					       table-f)))))))
+			      
