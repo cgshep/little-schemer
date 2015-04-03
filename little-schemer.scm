@@ -1166,5 +1166,172 @@
 ;; will-stop?: Determines whether some function completes
 ;; Complete for fame and profit
 ;; Page 157
-(define will-stop?
-  (lambda (f)))
+;; (define will-stop?
+;;   (lambda (f)))
+
+;; Determines the length of the empty list and nothing else
+;; Let's call this length0
+;; Page 160
+;; (lambda (l)
+;;   (cond
+;;     ((null? l) 0)
+;;     (else (add1 (eternity (cdr l)))))))
+;;
+;; Determines the length of lists that contain one or fewer items
+;; Page 160
+;; (lambda (l)
+;;   (cond
+;;    ((null? l) 0)
+;;    (else (add1 (length0 (cdr l))))))
+;;
+;; But length0 is not made explicit, so replace it by its definition above
+;; Page 161
+;; (lambda (l)
+;;   (cond
+;;     ((null? l) 0)
+;;     (else
+;;       (add1
+;;         ((lambda (l)
+;;            (cond
+;;              ((null? l) 0)
+;;              (else (add1 (eternity (cdr l))))))
+;;          (cdr l))))))
+;;
+;; How do we determine the lengths of lists that contain two or fewer items?
+;; Page 161
+;; (lambda (l)
+;;   (cond
+;;     ((null? l) 0)
+;;     (else
+;;       (add1
+;;         ((lambda (l)
+;;            (cond
+;;              ((null? l) 0)
+;;              (else
+;;                (add1
+;;                  ((lambda (l)
+;;                     (cond
+;;                       ((null? l) 0)
+;;                       (else
+;;                         (add1
+;;                           (eternity
+;;                            (cdr l))))))
+;;                   (cdr l))))))
+;;           (cdr l))))))
+;;
+;; This is obviously impractical to extend for lists of significant length.
+;; But each function looks as if it's a variant of the first 'length', so
+;; let's try to abstract (the Ninth Commandment).
+;;
+;; This is length0:
+;; ((lambda (length)
+;;    (lambda (l)
+;;      (cond
+;;        ((null? l) 0)
+;;        (else (add1 (length (cdr l)))))))
+;;  eternity)
+;;
+;; This is length<=1:
+;; ((lambda (f)
+;;    (lambda (l)
+;;      (cond
+;;        ((null? l) 0)
+;;        (else (add1 (f (cdr l)))))))
+;;  ((lambda (g)
+;;     (lambda (l)
+;;       (cond
+;;         ((null? l) 0)
+;;         (else (add1 (g (cdr l)))))))
+;;    eternity))
+;;
+;; This is length<=2:
+;; ((lambda (length)
+;;    (lambda (l)
+;;      (cond
+;;        ((null? l) 0)
+;;        (else (add1 (length (cdr l)))))))
+;;  ((lambda (length)
+;;     (lambda (l)
+;;       (cond
+;;         ((null? l) 0)
+;;         (else (add1 (length (cdr l)))))))
+;;   ((lambda (length)
+;;      (lambda (l)
+;;        (cond
+;;          ((null? l) 0)
+;;          (else (add1 (length (cdr l)))))))
+;;     eternity)))
+;;
+;; There are still repetitions, though.
+;; Let's use 'mklength' that takes length as an argument and
+;; returns a function that looks like length.
+;;
+;; Firstly with length0:
+;; ((lambda (mk-length)
+;;    (mk-length eternity))
+;;  (lambda (length)
+;;    (lambda (l)
+;;      (cond
+;;        ((null? l) 0)
+;;        (else (add1 (length (cdr l)))))))))
+;;
+;; And with length<=1:
+;; ((lambda (mk-length)
+;;    (mk-length (mk-length eternity)))
+;;  (lambda (length)
+;;    (lambda (l)
+;;      (cond
+;;        ((null? l) 0)
+;;        (else (add1 (length (cdr 1))))))))
+;;
+;; Now length<=2:
+;; ((lambda (mk-length)
+;;    (mk-length (mk-length (mk-length eternity))))
+;;  (lambda (length)
+;;    (lambda (l)
+;;      (cond
+;;        ((null? l) 0)
+;;        (else (add1 (length (cdr l))))))))
+;;
+;; Last time for length<=3:
+;; ((lambda (mk-length)
+;;    (mk-length
+;;      (mk-length
+;;        (mk-length
+;;          (mk-length eternity)))))
+;;  (lambda (length)
+;;    (lambda (l)
+;;      (cond
+;;        ((null? l) 0)
+;;        (else (add1 (length (cdr l))))))))
+;;
+;; We can replace eternity with mk-length:
+;; ((lambda (mk-length)
+;;    (mk-length mk-length))
+;;  (lambda (length)
+;;    (lambda (l)
+;;      (cond
+;;        ((null? l) 0)
+;;        (else (add1 (length (cdr l))))))))
+;;
+;; And even replace 'length' with 'mk-length':
+;; ((lambda (mk-length)
+;;    (mk-length mk-length))
+;;  (lambda (mk-length)
+;;    (lambda (l)
+;;      (cond
+;;        ((null? l) 0)
+;;        (else (add1 (mk-length (cdr l))))))))
+;;
+;; Now, thanks to currying, we can add an additional recursive use:
+;; ((lambda (mk-length)
+;;    (mk-length mk-length))
+;;  (lambda (mk-length)
+;;    (lambda (l)
+;;      (cond
+;;        ((null? l) 0)
+;;        (else (add1
+;;                ((mk-length eternity) (cdr l))))))))
+;;
+;; What if we pass '(apples) to the above function?
+;;
