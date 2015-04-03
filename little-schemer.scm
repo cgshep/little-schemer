@@ -1334,4 +1334,78 @@
 ;;                ((mk-length eternity) (cdr l))))))))
 ;;
 ;; What if we pass '(apples) to the above function?
+;; Returns 1.
 ;;
+;; The function 'length' is created by replacing 'eternity' with
+;; 'mk-length' in the above function.
+;;
+;; We can extract '(mk-length mk-length)' and call it 'length':
+;; ((lambda (mk-length)
+;;    (mk-length mk-length)
+;;  (lambda (mk-length)
+;;    ((lambda (length)
+;;       (lambda (l)
+;;         (cond
+;;           ((null? l) 0)
+;;           (else (add1 (length (cdr l)))))))
+;;     (mk-length mk-length))))
+;;
+;; But to evaluate (mk-length mk-length) on the function (lambda (length)),
+;; we need the value of (lambda (mk-length)), which will repeat ad infinitum.
+;; Let's step back to the function before last; replace (mk-length mk-length)
+;; to give:
+;;
+;; ((lambda (mk-length)
+;;    (mk-length mk-length))
+;;  (lambda (mk-length)
+;;    (lambda (l)
+;;      (cond
+;;        ((null? l) 0)
+;;        (else
+;;          (add1
+;;            ((lambda (x)
+;;               ((mk-length mk-length) x))
+;;             (cdr l))))))))
+;;
+;; And move out the function so we get length back:
+;; ((lambda (mk-length)
+;;    (mk-length mk-length))
+;;  (lambda (mk-length)
+;;    ((lambda (length)
+;;       (lambda (l)
+;;         (cond
+;;           ((null? l) 0)
+;;           (else (add1 (length (cdr l)))))))
+;;    (lambda (x)
+;;      ((mk-length mk-length) x)))))
+;;
+;; The function that looks like 'length' can now be extracted since it
+;; doesn't depend on mk-length:
+;; ((lambda (le)
+;;    ((lambda (mk-length)
+;;       (mk-length mk-length))
+;;     (lambda (mk-length)
+;;       (le (lambda (x)
+;;             ((mk-length mk-length) x))))))
+;;  (lambda (length)
+;;    (lambda (l)
+;;      (cond
+;;        ((null? l) 0)
+;;        (else (add1 (length (cdr l))))))))
+;;
+;; Now seperating the function 'length':
+;; (lambda (le)
+;;   ((lambda (mk-length)
+;;      (mk-length mk-length))
+;;    (lambda (mk-length)
+;;      (le (lambda (x)
+;;            ((mk-length mk-length) x))))))
+;;
+;; Y: The applicative-order Y combinator
+;; Page 172
+(define Y
+  (lambda (le)
+    ((lambda (f) (f f))
+     (lambda (f)
+       (le (lambda (x) ((f f) x)))))))
+
