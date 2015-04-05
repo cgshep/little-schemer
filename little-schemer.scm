@@ -871,7 +871,7 @@
 ;; Page 133
 (define subst1 (insert-g seqS))
 
-;; atom-to-function:
+;; atom-to-function: Maps an atom to its appropriate function
 ;; Page 135
 (define atom-to-function
   (lambda (a)
@@ -1455,4 +1455,59 @@
 			      (lookup-in-table name
 					       (cdr table)
 					       table-f)))))))
-			      
+
+;; expression-to-action: Produces the correct action for each S-expression
+;; Page 181
+(define expression-to-action
+  (lambda (e)
+    (cond
+     ((atom? e) (atom-to-action e))
+     (else (list-to-action e)))))
+
+;; atom-to-action: Maps an atom to its corresponding action
+;; Page 181
+(define atom-to-action
+  (lambda (e)
+    (cond
+     ((number? e) *const)
+     ((eq? e #t) *const)
+     ((eq? e #f) *const)
+     ((eq? e (quote cons)) *const)
+     ((eq? e (quote car)) *const)
+     ((eq? e (quote cdr)) *const)
+     ((eq? e (quote null?)) *const)
+     ((eq? e (quote eq?)) *const)
+     ((eq? e (quote atom?)) *const)
+     ((eq? e (quote zero?)) *const)
+     ((eq? e (quote add1)) *const)
+     ((eq? e (quote sub1)) *const)
+     ((eq? e (quote number?)) *const)
+     (else *identifier))))
+
+;; list-to-action: Maps a list to its corresponding action
+;; Page 182
+(define list-to-action
+  (lambda (e)
+    (cond
+     ((atom? (car e))
+      (cond
+       ((eq? (car e) (quote quote))
+	*quote)
+       ((eq? (car e) (quote lambda))
+	*lambda)
+       ((eq? (car e) (quote cond))
+	*cond)
+       (else *application)))
+     (else *application))))
+
+;; val: Evaluates an expression
+;; Page 182
+(define val
+  (lambda (e)
+    (meaning e (quote ()))))
+
+;; meaning: Finds the meaning of an expression from a table
+;; Page 182
+(define meaning
+  (lambda (e table)
+    ((expression-to-action e) e table)))
