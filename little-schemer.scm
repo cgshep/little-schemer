@@ -4,6 +4,8 @@
     (and
      (not (pair? x)) (not (null? x)))))
 
+;; lat?: Determines whether the argument is a list
+;; Page 19
 (define lat?
   (lambda (l)
     (cond
@@ -11,6 +13,8 @@
      ((atom? (car l)) (lat? (cdr l)))
      (else #f))))
 
+;; member?: Determines whether an atom is part of a list
+;; Page 21
 (define member?
   (lambda (a lat)
     (cond
@@ -19,7 +23,7 @@
 	       (member? a (cdr lat)))))))
 
 ;; Rember: removes first occurrence of a member from a list
-;; Page 94
+;; Page 41
 (define rember
   (lambda (s l)
     (cond
@@ -30,7 +34,7 @@
 		 (rember s (cdr l)))))))
 
 ;; firsts: constructs a list with the first elements of each internal list
-;; Pa
+;; Page 46
 (define firsts
   (lambda (l)
     (cond
@@ -40,6 +44,7 @@
 
 ;; insertR: Inserts the element 'new' to the right of 'old' in list 'lat'
 ;; new: topping, old: fudge, lat: (ice cream with fudge for desert)
+;; Page 49
 (define insertR
   (lambda (new old lat)
     (cond
@@ -1511,3 +1516,215 @@
 (define meaning
   (lambda (e table)
     ((expression-to-action e) e table)))
+
+;; const*: Defines the action for constants
+;; Page 183
+(define *const
+  (lambda (e table)
+    (cond
+     ((number? e) e)
+     ((eq? e #t) #t)
+     ((eq? e #f) #f)
+     (else (build (quote primitive) e)))))
+
+;; *quote: Defines the action for quotes
+;; Page 183
+(define *quote
+  (lambda (e table)
+    (text-of e)))
+
+;; text-of: Synonym for second
+;; Page 183
+(define text-of second)
+
+;; *identifier: Defines the action for identifiers
+;; Page 183
+(define *identifier
+  (lambda (e table)
+    (lookup-in-table e table initial-table)))
+
+;; initial-table
+;; Page 183
+(define initial-table
+  (lambda (name)
+    (car (quote ()))))
+
+;; *lambda: Defining a lambda function
+;; Page 184
+(define *lambda
+  (lambda (e table)
+    (build (quote non-primitive)
+	   (cons table (cdr e)))))
+
+;; Example: (meaning e table), where e=(lambda (x) (cons x y))
+;; and table=(((y z) ((8) 9)))
+;;
+;; Results in:
+;; (non-primitive
+;;   ( (((y z) ((8) 9)))    (x)    (cons x y) ))
+;;
+;; Here, (((y z) ((8) 9))) is the table, (x) are the formals and
+;; (cons x y) is the body
+
+;; table-of: Retrieves the table from the above definition
+;; Page 184
+(define table-of first)
+
+;; formals-of: Retrieves the formals
+;; Page 184
+(define formals-of second)
+
+;; body-of: Retrieves the body
+;; Page 184
+(define body-of third)
+
+;; evcon: Evaluates a conditional statement
+;; Page 185
+(define evcon
+  (lambda (lines table)
+    (cond
+     ((else? (question-of (car lines)))
+      (meaning (answer-of (car lines))
+	       table))
+     ((meaning (question-of (car lines))
+	       table)
+      (meaning (answer-of (car lines))
+	       table))
+     (else (evcon (cdr lines) table)))))
+
+;; else?: Determines whether an atom represents 'else'
+;; Page 185
+(define else?
+  (lambda (x)
+    (cond
+     ((atom? x) (eq? x (quote else)))
+     (else #f))))
+
+;; question-of: Synonym of first for conditionals
+;; Page 185
+(define question-of first)
+
+;; answer-of: Synonym of second for conditionals
+;; Page 185
+(define answer-of second)
+
+;; *cond: Defines the conditional primitive
+;; Page 185
+(define *cond
+  (lambda (e table)
+    (evcon (cond-lines-of e) table)))
+
+;; cond-lines-of: Synonym of cdr for conditional statements
+;; Page 185
+(define cond-lines-of cdr)
+
+;; evlis: Takes a list of arguments and a table and returns a list
+;; composed of the meaning of each argument
+;; Page 186
+(define evlis
+  (lambda (args table)
+    (cond
+     ((null? args) (quote ()))
+     (else
+      (cons (meaning (car args) table)
+	    (evlis (cdr args) table))))))
+
+;; *application: Defines the application primitive
+;; Page 186
+(define *application
+  (lambda (e table)
+    (apply
+     (meaning (function-of e) table)
+     (evlis (arguments-of e) table))))
+
+;; function-of: Synonym of car for function name
+;; Page 187
+(define function-of car)
+
+;; arguments-of: Synonym of cdr for function arguments
+;; Page 187
+(define arguments-of cdr)
+
+;; primitive?: Determines whether a function is primitive
+;; Page 187
+(define primitive?
+  (lambda (l)
+    (eq? (first l) (quote primitive))))
+
+;; non-primitive?: Determines whether a function is non-primitive
+;; Page 187
+(define non-primitive?
+  (lambda (l)
+    (eq? (first l) (quote non-primitive))))
+
+;; apply: Performs function application
+;; Page 187
+(define apply
+  (lambda (fun vals)
+    (cond
+     ((primitive? fun)
+      (apply-primitive
+       (second fun) vals))
+     ((non-primitive? fun)
+      (apply-closure
+       (second fun) vals)))))
+
+;; apply-primitive: Performs application of primitive functions
+;; Page 188
+(define apply-primitive
+  (lambda (name vals)
+    (cond
+     ;; cons
+     ((eq? name (quote cons))
+      (cons (first vals) (second vals)))
+     ;; car
+     ((eq? name (quote car))
+      (car (first vals)))
+     ;; cdr
+     ((eq? name (quote cdr))
+      (cdr (first vals)))
+     ;; null?
+     ((eq? name (quote null?))
+      (null? (first vals)))
+     ;; eq?
+     ((eq? name (quote eq?))
+      (eq? (first vals) (second vals)))
+     ;; atom?
+     ((eq? name (quote atom?))
+      (:atom? (first vals)))
+     ;; zero?
+     ((eq? name (quote zero?))
+      (zero? (first vals)))
+     ;; add1
+     ((eq? name (quote add1))
+      (add1 (first vals)))
+     ;; sub1
+     ((eq? name (quote sub1))
+      (sub1 (first vals)))
+     ;; number?
+     ((eq? name (quote number?))
+      (number? (first vals))))))
+
+;; :atom?: Determines whether an element is an atom in the context of
+;; primitive function application
+;; Page 188
+(define :atom?
+  (lambda (x)
+    (cond
+     ((atom? x) #t)
+     ((null? x) #f)
+     ((eq? (car x) (quote primitive))
+      #t)
+     ((eq? (car x) (quote non-primitive))
+      #t)
+     (else #f))))
+
+;; apply-closure
+;; Page 189
+(define apply-closure
+  (lambda (closure vals)
+    (meaning (body-of closure)
+	     (extend-table
+	      (new-entry (formals-of closure)
+			 vals)
+	      (table-of closure)))))
