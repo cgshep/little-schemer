@@ -6,7 +6,7 @@ Contains:
 * Scheme files with function definitions developed during each book (tested under [Chicken](http://www.call-cc.org/))
 * The Little and Seasoned Schemer Commandments (below)
 * [Supporting literature](/literature/)
-  * *"Applications of Continuations"* – Daniel P. Friedman
+  * "Applications of Continuations" – Daniel P. Friedman
 
 ## The Little Schemer Commandments
 
@@ -43,7 +43,5 @@ termination with `zero?`.
 
 10. Build functions to collect more than one value at a time
 
-![The Little Schemer](http://lambda.jstolarek.com/wp-content/uploads/2013/01/The_Little_Schemer.jpg)
-
 ## The Seasoned Schemer Commandments
-
+| ![The Little Schemer](http://lambda.jstolarek.com/wp-content/uploads/2013/01/The_Little_Schemer.jpg) | ![Seasoned Schemer](http://ecx.images-amazon.com/images/I/51GLbRPvKWL._SX258_BO1,204,203,200_.jpg) |
