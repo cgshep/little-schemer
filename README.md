@@ -1,4 +1,4 @@
-# Resources for The Little Schemer and The Seasoned Schemer
+# The Little Schemer and The Seasoned Schemer Resources
 
 Study resources for [The Little Schemer](http://mitpress.mit.edu/books/little-schemer) and [The Seasoned Schemer](https://mitpress.mit.edu/books/seasoned-schemer).
 
@@ -43,5 +43,6 @@ termination with `zero?`.
 
 10. Build functions to collect more than one value at a time
 
+![The Little Schemer](http://lambda.jstolarek.com/wp-content/uploads/2013/01/The_Little_Schemer.jpg)
+
 ## The Seasoned Schemer Commandments
-| ![The Little Schemer](http://lambda.jstolarek.com/wp-content/uploads/2013/01/The_Little_Schemer.jpg) | ![Seasoned Schemer](http://ecx.images-amazon.com/images/I/51GLbRPvKWL._SX258_BO1,204,203,200_.jpg) |
