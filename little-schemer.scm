@@ -1,4 +1,5 @@
-
+;; atom?: Determines whether the argument is an atom
+;; Preliminary
 (define atom?
   (lambda (x)
     (and
