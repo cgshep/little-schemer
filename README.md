@@ -1,10 +1,10 @@
-# Little Schemer Resources
+# Resources for The Little Schemer and The Seasoned Schemer
 
-Study resources for [The Little Schemer](http://mitpress.mit.edu/books/little-schemer).
+Study resources for [The Little Schemer](http://mitpress.mit.edu/books/little-schemer) and [The Seasoned Schemer](https://mitpress.mit.edu/books/seasoned-schemer).
 
 Contains:
-* Scheme file with function definitions developed during the book (tested under [Chicken](http://www.call-cc.org/))
-* The Little Schemer Commandments (below)
+* Scheme files with function definitions developed during each book (tested under [Chicken](http://www.call-cc.org/))
+* The Little and Seasoned Schemer Commandments (below)
 * [Supporting literature](/literature/)
   * *"Applications of Continuations"* – Daniel P. Friedman
 
@@ -44,4 +44,6 @@ termination with `zero?`.
 10. Build functions to collect more than one value at a time
 
 ![The Little Schemer](http://lambda.jstolarek.com/wp-content/uploads/2013/01/The_Little_Schemer.jpg)
+
+## The Seasoned Schemer Commandments
 
