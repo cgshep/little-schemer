@@ -1,4 +1,4 @@
-# The Little Schemer and The Seasoned Schemer Resources
+# The Little and Seasoned Schemer
 
 Study resources for [The Little Schemer](http://mitpress.mit.edu/books/little-schemer) and [The Seasoned Schemer](https://mitpress.mit.edu/books/seasoned-schemer).
 
@@ -7,6 +7,7 @@ Contains:
 * The Little and Seasoned Schemer Commandments (below)
 * [Supporting literature](/literature/)
   * "Applications of Continuations" – Daniel P. Friedman
+  * "A Tutorial Introduction to the Lambda Calculus" – Raul Rojas
 
 ## The Little Schemer Commandments
 
