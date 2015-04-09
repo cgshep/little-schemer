@@ -9,7 +9,7 @@ Contains:
   * "Applications of Continuations" – Daniel P. Friedman
   * "A Tutorial Introduction to the Lambda Calculus" – Raul Rojas
 
-## The Little Schemer Commandments
+## The Little and Seasoned Schemer Commandments
 
 1. The first condition when recursing through a list should be `(null? lat)`
    When recursing with numbers, ask `(zero? n)` and 'else'
@@ -43,10 +43,6 @@ termination with `zero?`.
 9. Abstract common patterns with a new function
 
 10. Build functions to collect more than one value at a time
-
-![The Little Schemer](http://lambda.jstolarek.com/wp-content/uploads/2013/01/The_Little_Schemer.jpg)
-
-## The Seasoned Schemer Commandments
 
 11. Use additional arguments when a function needs to know what other
 arguments to the function have been like so far
