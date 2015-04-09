@@ -47,3 +47,6 @@ termination with `zero?`.
 ![The Little Schemer](http://lambda.jstolarek.com/wp-content/uploads/2013/01/The_Little_Schemer.jpg)
 
 ## The Seasoned Schemer Commandments
+
+11. Use additional arguments when a function needs to know what other
+arguments to the function have been like so far
