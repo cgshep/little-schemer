@@ -89,3 +89,25 @@
 	    (scramble-b (cdr tup)
 			(cons (car tup) rev-pre)))))))
 
+;; multirember: multirember from The Little Schemer using the Y combinator
+;; so we don't have to pass the removal element through every recursive call
+;; Page 17
+(define multirember
+  (lambda (a lat)
+    ((Y (lambda (mr)
+	  (lambda (lat)
+	    (cond
+	     ((null? lat) (quote ()))
+	     ((eq? a (car lat))
+	      (mr (cdr lat)))
+	     (else (cons (car lat)
+			 (mr (cdr lat))))))))
+     lat)))
+
+;; Y: Y combinator
+;; From The Little Schemer
+(define Y
+  (lambda (le)
+    ((lambda (f) (f f))
+     (lambda (f)
+       (le (lambda (x) ((f f) x)))))))
