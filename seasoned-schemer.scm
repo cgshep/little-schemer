@@ -111,3 +111,92 @@
     ((lambda (f) (f f))
      (lambda (f)
        (le (lambda (x) ((f f) x)))))))
+
+;; length: Length of a list using the Y combinator
+;; Page 17
+(define length
+  (Y (lambda (length)
+       (lambda (l)
+	 (cond
+	  ((null? l) 0)
+	  (else
+	   (+ 1 (length (cdr l)))))))))
+
+;; mrletrec: multirember in the letrec style
+;; Page 22
+(define mrletrec
+  (lambda (a lat)
+    (letrec
+	((mr (lambda (lat)
+	       (cond
+		((null? lat) (quote ()))
+		((eq? a (car lat))
+		 (mr (cdr lat)))
+		(else
+		 (cons (car lat)
+		       (mr (cdr lat))))))))
+      (mr lat))))
+
+;; multirember-f: Removes an atom from a list of atoms according to some
+;; test function
+;; Page 23
+(define multirember-f
+  (lambda (test?)
+    (lambda (a lat)
+      (cond
+       ((null? lat) (quote ()))
+       ((test? (car lat) a)
+	((multirember-f test?) a (cdr lat)))
+       (else (cons (car lat)
+		   ((multirember-f test?) a (cdr lat))))))))
+
+;; multirember-f-2: multirember-f using letrec
+;; Page 24
+(define multirember-f-2
+  (lambda (test?)
+    (letrec
+	((m-f
+	  (lambda (a lat)
+	    (cond
+	     ((null? lat) (quote ()))
+	     ((test? (car lat) a)
+	      (m-f a (cdr lat)))
+	     (else
+	      (cons (car lat)
+		    (m-f a (cdr lat))))))))
+      m-f)))
+
+;; multirember-eq: multirember-f-2 where test? is eq?
+;; Page 25
+(define multirember-eq
+  (letrec
+      ((mr (lambda (a lat)
+	     (cond
+	      ((null? lat) (quote ()))
+	      ((eq? (car lat) a)
+	       (mr a (cdr lat)))
+	      (else
+	       (cond (car lat)
+		     (mr a (cdr lat))))))))
+    mr))
+
+;; member?: Determines whether an atom is a member of a list
+;; page 26
+(define member?
+  (lambda (a lat)
+    (cond
+     ((null? lat) #f)
+     ((eq? a (car lat)) #t)
+     (else (member? a (cdr lat))))))
+
+;; member?-2: member? in letrec style
+;; Page 27
+(define member?-2
+  (lambda (a lat)
+    (letrec
+	((yes? (lambda (l)
+		 (cond
+		  ((null? l) #f)
+		  ((eq? (car l) a) #t)
+		  (else (yes? (cdr l)))))))
+      (yes? lat))))
